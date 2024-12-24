@@ -10,6 +10,7 @@ use App\Models\Amenities;
 use App\Models\Reservation;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
+use Illuminate\Support\Facades\Log;
 
 class BookController extends Controller
 {
@@ -38,16 +39,26 @@ class BookController extends Controller
     {
         // Initialize Stripe
         Stripe::setApiKey(env('STRIPE_SECRET'));
-    
+
         // Retrieve reservation details from the request
-        $roomName = $request->input('room_name');
-        $checkInDate = $request->input('check_in_date');
-        $checkOutDate = $request->input('check_out_date');
-        $amenityName = $request->input('amenity_name');
-    
+        $roomName = $request->input('room');
+        $checkInDate = $request->input('checkInDate');
+        $checkOutDate = $request->input('checkOutDate');
+        $amenityName = $request->input('amenity');
+
+        // Log the values for debugging
+        Log::debug('Reservation Details:', [
+            'roomName' => $roomName,
+            'checkInDate' => $checkInDate,
+            'checkOutDate' => $checkOutDate,
+            'amenityName' => $amenityName
+        ]);
+
         // Retrieve room details (all available room IDs for the selected room name)
         $rooms = Room::where('room_name', $roomName)->get();
-    
+
+        Log::debug('Available Rooms:', $rooms->toArray());
+
         // Check for available rooms
         $availableRoom = null;
         foreach ($rooms as $room) {
@@ -58,22 +69,25 @@ class BookController extends Controller
                         ->orWhereRaw('? BETWEEN check_in_date AND check_out_date', [$checkInDate])
                         ->orWhereRaw('? BETWEEN check_in_date AND check_out_date', [$checkOutDate]);
                 })->count();
-    
-            // If room is available, select it
-            if ($reservationsCount < $room->max_rooms) {
+
+            // If the room is available (not fully booked), select it
+            if ($room->availability_status == 'available') {
                 $availableRoom = $room;
-                break;
+                break;  // Select the first available room and exit the loop
             }
         }
-    
+
+
+        Log::debug('Available Room:', $availableRoom ? $availableRoom->toArray() : ['message' => 'No available room found']);
+
         // If no rooms are available, return error
         if (!$availableRoom) {
             return response()->json(['error' => 'No rooms available for the selected dates'], 400);
         }
-    
+
         // Use the randomly selected available room
-        $room_id = $availableRoom->id;
-    
+        $room_id = $availableRoom->room_id;
+
         // Check if the selected available room is fully booked
         $reservationsCount = Reservation::where('room_id', $room_id)  // Use $room_id here
             ->where(function ($query) use ($checkInDate, $checkOutDate) {
@@ -82,8 +96,9 @@ class BookController extends Controller
                     ->orWhereRaw('? BETWEEN check_in_date AND check_out_date', [$checkInDate])
                     ->orWhereRaw('? BETWEEN check_in_date AND check_out_date', [$checkOutDate]);
             })->count();
-    
-        if ($reservationsCount >= $availableRoom->max_rooms) {
+
+
+        if ($reservationsCount == 1) {
             return response()->json(['error' => 'Room is fully booked for the selected dates'], 400);
         }
 
@@ -95,17 +110,26 @@ class BookController extends Controller
         $totalRoomPrice = $roomPrice * $nights;
 
         $amenityPrice = 0;
+        $amenityId = 0;
         if ($amenityName) {
             $amenity = Amenities::where('amenity_name', $amenityName)->first();
             $amenityPrice = $amenity ? $amenity->price_per_use : 0;
+            $amenityId = $amenity ? $amenity->amenity_id : 0;
         }
 
         $totalPrice = $totalRoomPrice + $amenityPrice;
+        $idAmenity = $amenityId;
+        // Log the amenityId after it's been set
+        Log::debug('Selected Amenity ID Type:', [
+            'amenity_id_type' => gettype($idAmenity),
+        ]);
+
 
         // Create a reservation record
         $reservation = Reservation::create([
-            'user_id' => auth()->user->id(),
-            'room_id' => $room->id,
+            'user_id' => auth()->user()->id,
+            'room_id' => $room->room_id,
+            'amenity_id' => $idAmenity,
             'check_in_date' => $checkInDate,
             'check_out_date' => $checkOutDate,
             'total_price' => $totalPrice,
@@ -142,9 +166,6 @@ class BookController extends Controller
     {
         // Retrieve the session ID
         $sessionId = $request->query('session_id');
-
-        // Save the reservation to the database
-        // Example: Save reservation details, mark room as reserved, etc.
 
         return view('reservationsuccess'); // Create a success page
     }

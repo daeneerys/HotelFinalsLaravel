@@ -33,7 +33,6 @@ class CreateReservationsTable extends Migration
         
             $table->date('check_in_date');
             $table->date('check_out_date');
-            $table->decimal('price_per_room', 10, 2); // Price of the reserved room
             $table->decimal('total_price', 10, 2); // Total price for the reservation
             $table->string('reservation_status', 50); // Example: Pending, Confirmed, Cancelled
             $table->timestamps(); // Adds created_at and updated_at columns

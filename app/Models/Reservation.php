@@ -14,6 +14,7 @@ class Reservation extends Model
     protected $fillable = [
         'user_id',
         'room_id',
+        'amenity_id',
         'check_in_date',
         'check_out_date',
         'total_price',
@@ -24,6 +25,11 @@ class Reservation extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function amenity()
+    {
+        return $this->belongsTo(Amenities::class, 'amenity_id');
     }
 
     public function room()

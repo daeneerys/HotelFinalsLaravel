@@ -8,6 +8,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -83,6 +84,9 @@ class UserController extends Controller
         if (Auth::attempt($credentials)) {
             // Regenerate session to prevent fixation attacks
             $request->session()->regenerate();
+
+            // Debugging: Log the authenticated user's ID
+            Log::debug('Authenticated User ID:', ['user_id' => auth()->user()->id]);
 
             // Redirect to the intended page or default dashboard
             return redirect()->intended('my-reservation');
