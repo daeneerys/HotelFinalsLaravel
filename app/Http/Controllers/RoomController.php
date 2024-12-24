@@ -66,7 +66,7 @@ class RoomController extends Controller
 
         // Group rooms by room_type
         $groupedRooms = $rooms->groupBy('room_type');
-    
+
         // Filter unique rooms by room_name
         $uniqueRooms = $rooms->unique('room_name');
 
@@ -75,12 +75,55 @@ class RoomController extends Controller
         $suiteRoomCount = $groupedRooms->has('suite') ? $groupedRooms['suite']->unique('room_name')->count() : 0;
         $villaRoomCount = $groupedRooms->has('villa') ? $groupedRooms['villa']->unique('room_name')->count() : 0;
         $specialtyRoomCount = $groupedRooms->has('specialty suite') ? $groupedRooms['specialty suite']->unique('room_name')->count() : 0;
-        
+
         $totalRoomCount = $uniqueRooms->count();
 
         return view('room', compact('groupedRooms', 'uniqueRooms', 'guestRoomCount', 'suiteRoomCount', 'villaRoomCount', 'specialtyRoomCount', 'totalRoomCount'));
     }
 
-    // Additional methods for listing, showing, editing, etc.
-    
+    public function roomdetails($room_name)
+    {
+        // Replace dashes back to spaces
+        $room_name = str_replace('-', ' ', $room_name);
+
+        // Fetch a single room by room_name
+        $room = Room::where('room_name', $room_name)->firstOrFail();
+
+        return view('roomdetails', [
+            'room_name' => $room->room_name,
+            'room_type' => $room->room_type,
+            'room_size' => $room->room_size,
+            'description' => $room->description,
+            'capacity' => $room->capacity,
+            'price_per_night' => $room->price_per_night,
+            'room_details' => $room->room_details,
+            'room_image_1' => $room->room_image_1,
+        ]);
+    }
+
+    public function checkAvailability(Request $request)
+    {
+        // Get the room_name from the request
+        $roomName = $request->input('room_name');
+
+        // Find all rooms with the same room name
+        $rooms = Room::where('room_name', $roomName)->get();
+
+        // Check if any of the rooms are available
+        $isAvailable = $rooms->contains(function ($room) {
+            return $room->availability_status === 'available';
+        });
+
+        if ($isAvailable) {
+            return response()->json([
+                'available' => true,
+                'message' => 'At least one room with this name is available!'
+            ]);
+        } else {
+            return response()->json([
+                'available' => false,
+                'message' => 'Sorry, all rooms with this name are unavailable.'
+            ]);
+        }
+    }
 }

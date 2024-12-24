@@ -1,6 +1,6 @@
 <h3 class="font-poppins font-bold text-lg tracking-widest">Specialty Suite Rooms</h3>
-<p class="font-inter text-sm mt-2">Experience the extraordinary in our Specialty Suites. 
-    From private plunge pools overlooking the jungle canopy to breathtaking views of cascading waterfalls, 
+<p class="font-inter text-sm mt-2">Experience the extraordinary in our Specialty Suites.
+    From private plunge pools overlooking the jungle canopy to breathtaking views of cascading waterfalls,
     these unique retreats offer an unforgettable escape.
 </p>
 <div class="grid grid-cols-2 mt-8 mx-auto">
@@ -68,12 +68,13 @@
             </div>
         </div>
         <div class="flex justify-center space-x-4 mb-4">
-            <button class="bg-jungle-green text-white py-1 w-2/5 rounded-m hover:bg-jungle-brown">
+            <a href="{{route('book')}}" class="bg-jungle-green text-center text-white py-1 w-2/5 rounded-m hover:bg-jungle-brown">
                 BOOK NOW
-            </button>
-            <button class="border border-black text-black py-1 w-2/5 rounded-m">
+            </a>
+            <a href="{{ route('roomdetails', ['room_name' => str_replace(' ', '-', $room->room_name)]) }}"
+                class="border text-center border-black text-black py-1 w-2/5 rounded-m">
                 DETAILS
-            </button>
+            </a>
         </div>
     </div>
     @endif

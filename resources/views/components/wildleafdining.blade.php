@@ -1,4 +1,4 @@
-<img alt="The Wild Orchid" class="w-4/6 h-auto mx-auto" src="{{ asset('images/wildleafdining.webp') }}" />
+<img alt="The Wild Orchid" class="w-4/6 h-auto mx-auto" src="{{ asset('images/amenities/wildleafdining.webp') }}" />
 <div class="grid grid-cols-1 w-4/6 md:grid-cols-2 gap-2 mt-4 mx-auto">
     <div>
         <h4 class="font-caveat uppercase font-light text-3xl">Wildleaf Dining</h4>

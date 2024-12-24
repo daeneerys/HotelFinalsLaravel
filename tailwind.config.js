@@ -17,7 +17,8 @@ export default {
             'jungle-green':'#1f3f2b',
             'jungle-yellow':'#fec00f',
             'jungle-brown':'#be945b',
-            'jungle-dark-brown':'#422f25'
+            'jungle-dark-brown':'#422f25',
+            'jungle-light-brown' : '#f8f1e7'
           },
           fontFamily: {
             caveat: ['Caveat', 'sans-serif'], 
@@ -25,6 +26,8 @@ export default {
             poppins: ['Poppins', 'sans-serif'],
           },
           height:{
+            110:'27.7rem',
+            112:'28rem',
             128:'32rem',
             192:'40rem',
           },

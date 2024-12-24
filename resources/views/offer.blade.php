@@ -26,7 +26,7 @@
         </a>
         <div class="mt-4">
             <button class="bg-jungle-green text-white py-2 px-4 rounded-md hover:bg-jungle-brown transition duration-300">
-                BOOK NOW
+                <a href="{{route('book')}}">BOOK NOW</a>
             </button>
         </div>
     </div>
@@ -44,7 +44,7 @@
         </a>
         <div class="mt-4">
             <button class="bg-jungle-green text-white py-2 px-4 rounded-md hover:bg-jungle-brown transition duration-300">
-                BOOK NOW
+                <a href="{{route('book')}}">BOOK NOW</a>
             </button>
         </div>
     </div>
@@ -62,7 +62,7 @@
         </a>
         <div class="mt-4">
             <button class="bg-jungle-green text-white py-2 px-4 rounded-md hover:bg-jungle-brown transition duration-300">
-                BOOK NOW
+                <a href="{{route('book')}}">BOOK NOW</a>
             </button>
         </div>
     </div>
@@ -70,7 +70,7 @@
 <div class="text-center mb-8 mt-8">
     <h1 class="text-2xl font-inter-normal">Stay up to date with special offers and events</h1>
 </div>
-<div class="bg-gray-200 mx-auto p-8 rounded-lg shadow-lg w-full max-w-4xl mb-16">
+<div class="bg-jungle-light-brown mx-auto p-8 rounded-lg shadow-lg w-full max-w-4xl mb-16">
     <form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 font-poppins">
         <div>
             <label for="first-name" class="block text-sm font-medium text-jungle-green">First Name <span class="text-jungle-green">*</span></label>

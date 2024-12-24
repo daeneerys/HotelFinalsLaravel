@@ -14,45 +14,33 @@
         </div>
     </div>
 </div>
-<!--Riverside Infinity Pool with Jungle Views && Treehouse Spa and Wellness Center -->
+
 <div class="container mt-16 mb-16 w-4/5 mx-auto">
-    <div class="grid grid-cols-6 gap-8 mt-8 bg-gray-100 px-12">
+    <div class="grid grid-cols-6 gap-8 mt-8 bg-jungle-light-brown px-12">
         <div class="col-span-3 flex items-center justify-center">
-            <img alt="Amenities Trail" class="w-full object-cover h-3/5 mx-auto" src="{{ asset('images/amenities_trail.jpg') }}" />
+            <img alt="Dining Experience" class="w-full object-cover h-3/5 mx-auto" src="{{ asset('images/home_dine.jpg') }}" />
         </div>
         <div class="col-span-3 flex flex-col justify-center gap-5">
-            <h1 class="text-3xl font-semibold font-inter">Private Nature Trails and Jungle Safaris</h1>
+            <h1 class="text-3xl font-semibold font-inter">Dining Experience</h1>
             <p class="text-sm font-poppins text-gray-700">
-                Wander through lush, verdant pathways alive with the sights and sounds of exotic wildlife,
-                or embark on a safari led by expert guides who reveal the secrets of the jungle.
-                Perfect for adventurers and nature enthusiasts,
-                these experiences blend exploration and tranquility for unforgettable moments in our serene jungle paradise.
+                Savor exquisite flavors at TigerDen, where luxury meets nature in our diverse restaurants and cafes. 
+                From treetop dining to riverside meals, each experience is a feast for the senses. <br>
+                <a class = "text-jungle-green underline" href = "{{ route('dine') }}">Click here to see our restaurants.</a>
             </p>
         </div>
     </div>
-    <div class="grid grid-cols-6 gap-8 mt-8 bg-gray-100 px-12">
+    @foreach($amenities as $amenity)
+    <div class="grid grid-cols-6 gap-8 mt-8 bg-jungle-light-brown px-12">
         <div class="col-span-3 flex items-center justify-center">
-            <img alt="Amenities Pool" class="w-full h-3/5 mx-auto" src="{{ asset('images/amenities_pool.webp') }}" />
-        </div>
-        <div class="col-span-3 flex flex-col justify-center gap-5 ">
-            <h1 class="text-3xl font-semibold font-inter object-cover">Riverside Infinity Pool with Jungle Views</h1>
-            <p class="text-sm font-poppins text-gray-700">
-                Relax and rejuvenate at our stunning riverside infinity pool, where the serene waters merge seamlessly with breathtaking jungle vistas.
-                Immerse yourself in the tranquil ambiance as you soak up panoramic views of lush greenery and the gentle flow of the river.
-            </p>
-        </div>
-    </div>
-    <div class="grid grid-cols-6 gap-8 mt-8 bg-gray-100 px-12">
-        <div class="col-span-3 flex items-center justify-center">
-            <img alt="Amenities Trail" class="w-full h-3/5 mx-auto object-cover" src="{{ asset('images/amenities_spa.webp') }}" />
+            <img alt="{{ $amenity->amenity_name }}" class="w-full object-cover h-3/5 mx-auto" src="{{ asset($amenity->image_path) }}" />
         </div>
         <div class="col-span-3 flex flex-col justify-center gap-5">
-            <h1 class="text-3xl font-semibold font-inter">Treehouse Spa and Wellness Center</h1>
+            <h1 class="text-3xl font-semibold font-inter">{{ $amenity->amenity_name }}</h1>
             <p class="text-sm font-poppins text-gray-700">
-                Elevate your senses at our exclusive Treehouse Spa and Wellness Center, perched amidst the lush canopy of the jungle.
-                Experience rejuvenating treatments inspired by nature, surrounded by the soothing sounds of rustling leaves and birdsong.
+                {{ $amenity->description }}
             </p>
         </div>
     </div>
+    @endforeach
 </div>
 @endsection

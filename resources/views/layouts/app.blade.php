@@ -17,7 +17,7 @@
     <!--Navbar-->
     <nav
         id="navbar"
-        data-route="{{ Route::currentRouteName() }}" 
+        data-route="{{ Route::currentRouteName() }}"
         class="fixed w-full z-50 top-0 start-0 
         {{ request()->routeIs('offers') || request()->routeIs('room') ? 'bg-jungle-green text-black' : 'bg-transparent text-white' }} 
         transition-colors duration-300">
@@ -52,16 +52,47 @@
                             OUR HOTEL
                         </a>
                     </li>
+                    @guest
+                    <!-- Show Login if user is not authenticated -->
                     <li>
                         <a href="{{ route ('login')}}" class="font-inter block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-jungle-brown md:p-0">
                             LOGIN
                         </a>
                     </li>
-                </ul>
+                    @endguest
+                    @auth
+                    <!-- Show More Dropdown if user is logged In -->
+                    <li>
+                        <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="flex items-center justify-between font-inter py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-jungle-brown md:p-0">MORE <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" 
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                            </svg>
+                        </button>
+                        <div id="dropdownNavbar" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownLargeButton">
+                                <li>
+                                    <a href="{{route ('myreservation')}}" class="block px-4 py-2 font-inter hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">My Reservations</a>
+                                </li>
+                                <li>
+                                    <a href="{{route ('book')}}" class="block px-4 py-2 font-inter hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Reserve Now</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <!-- Show Logout if user is authenticated -->
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="font-inter block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-jungle-brown md:p-0">
+                                LOGOUT
+                            </button>
+                        </form>
+                    </li>
+                    @endauth
             </div>
-        </div>
     </nav>
     @yield('content')
+    @if(!request()->is('reservation/success'))
     <footer class="bg-jungle-dark-brown py-8 font-inter">
         <div class="container mx-auto px-10">
             <div class="flex flex-col md:flex-row justify-between items-center md:space-x-8 border-b border-white pb-4">
@@ -86,6 +117,7 @@
             </div>
         </div>
     </footer>
+    @endif
 </body>
 
 </html>

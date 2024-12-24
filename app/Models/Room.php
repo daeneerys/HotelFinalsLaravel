@@ -25,4 +25,8 @@ class Room extends Model
     protected $casts = [
         'images' => 'array', // Automatically cast JSON to array
     ];
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'room_id');
+    }
 }

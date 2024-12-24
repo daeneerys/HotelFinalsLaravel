@@ -66,17 +66,16 @@
         <img alt="Verdant Sanctuary" class="w-full md:w-2/5 md:h-80 shadow-lg mb-8 md:mb-0 md:mr-8 object-cover" src="{{ asset('images/home_page_4.jpg') }}" />
         <div class="md:w-1/2 max-w-lg">
             <h3 class="text-xl font-inter md:text-3xl font-light mb-4">
-                Verdant Sanctuary
+                Lion's Lair
             </h3>
             <p class="mb-4">
-                Relax in plush bedding, surrounded by nature-inspired decor that evokes calmness and rejuvenation,
-                making it the perfect haven to unwind after a day of adventure at TigerDen.
+                Feel the majestic aura of the jungle king in this regal space. Warm tones and bold accents make it a perfect haven for relaxation.
             </p>
             <a class="text-jungle-green hover:underline mb-4 inline-block" href="#">Read more →</a>
             <div>
-                <button class="bg-jungle-green text-white py-2 px-3 rounded-md hover:bg-jungle-brown transition duration-300">
+                <a href="{{route('book')}}" class="bg-jungle-green text-white py-2 px-3 rounded-md hover:bg-jungle-brown transition duration-300">
                     Book Now
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -91,8 +90,8 @@
                 Savor the serene ambiance of our Jungle Bistro, nestled amidst lush greenery,
                 or enjoy vibrant flavors at our Oasis Lounge, where every bite feels like an escape into nature’s embrace.
             </p>
-            <button class="bg-white text-jungle-green py-2 px-6 rounded-md hover:bg-jungle-brown transition duration-300">
-                Learn More
+            <button  class="bg-white text-jungle-green py-2 px-6 rounded-md hover:bg-jungle-brown hover:text-white transition duration-300">
+                <a href="{{ route ('dine') }}">Learn More</a>
             </button>
         </div>
     </div>
@@ -107,9 +106,9 @@
             Nestled amidst the lush jungle, our resort blends modern luxury with nature’s beauty,
             offering you a peaceful escape from the ordinary.
         </p>
-        <button class="bg-jungle-green text-white ml-96 py-2 px-6 rounded-md hover:bg-jungle-brown transition duration-300">
+        <a href="{{ route ('login') }}" class="bg-jungle-green text-white ml-96 py-2 px-6 rounded-md hover:bg-jungle-brown transition duration-300">
             Sign in
-        </button>
+        </a>
     </div>
     <img alt="Signin" class="w-full md:w-2/5 md:h-80 shadow-lg mb-8 md:mb-0 md:ml-8 object-cover object-[50%_30%]" src="{{ asset('images/home_signin.jpg') }}" />
 </div>

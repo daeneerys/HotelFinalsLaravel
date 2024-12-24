@@ -5,15 +5,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const navbar = document.getElementById("navbar");
     const currentRoute = navbar.getAttribute("data-route");
 
-    // Apply scroll behavior only if not on the "offers" or "room" page
-    if (
-        currentRoute !== "offers" &&
-        currentRoute !== "room" &&
-        currentRoute !== "dine" &&
-        currentRoute !== "amenities" &&
-        currentRoute !== "login" &&
-        currentRoute !== "register"
-    ) {
+    // Check for routes where the transparent effect should apply
+    const scrollBehaviorRoutes = ["home", ""]; // Add empty string for fallback in case '/' is unnamed
+
+    if (scrollBehaviorRoutes.includes(currentRoute)) {
+        // Add scroll behavior
         document.addEventListener("scroll", function () {
             if (window.scrollY > 50) {
                 navbar.classList.remove("bg-transparent");
@@ -24,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     } else {
-        // If the current page is "offers" or "room", ensure the navbar stays colored
+        // Set navbar to solid green for other routes
         navbar.classList.remove("bg-transparent");
         navbar.classList.add("bg-jungle-green");
     }
