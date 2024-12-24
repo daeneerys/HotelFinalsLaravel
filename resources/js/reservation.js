@@ -397,11 +397,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById('submit-modal-btn').addEventListener('click', function () {
+        // Get values from the form
         const roomName = document.getElementById('selected-room').value;
         const amenityName = document.getElementById('selected-amenity').value;
         const checkInDate = document.getElementById('check-in-date').value;
         const checkOutDate = document.getElementById('check-out-date').value;
+        
+        console.log(roomName);
+        console.log(amenityName);
+        console.log(checkInDate);
+        console.log(checkOutDate);
+        // Validate that all fields are filled
+        if (!roomName || !amenityName || !checkInDate || !checkOutDate) {
+            alert('Please fill out all the fields');
+            return;
+        }
     
+        // Send reservation request
         fetch('/reserve', {
             method: 'POST',
             headers: {
@@ -419,8 +431,15 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             if (data.url) {
                 window.location.href = data.url; // Redirect to Stripe Checkout
+            } else {
+                // If no URL is returned, show an error
+                alert('Error: Unable to create reservation or payment session.');
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            // Log any errors and show an alert
+            console.error('Error:', error);
+            alert('An error occurred while processing your reservation.');
+        });
     });
 });

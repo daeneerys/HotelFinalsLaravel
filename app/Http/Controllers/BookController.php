@@ -34,107 +34,39 @@ class BookController extends Controller
         $amenities = Amenities::select('amenity_name', 'price_per_use')->get();
         return response()->json($amenities);
     }
-
+    
     public function reserve(Request $request)
     {
         // Initialize Stripe
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
         // Retrieve reservation details from the request
-        $roomName = $request->input('room');
-        $checkInDate = $request->input('checkInDate');
-        $checkOutDate = $request->input('checkOutDate');
-        $amenityName = $request->input('amenity');
+        $roomName = $request->input('room_name');
+        $checkInDate = $request->input('check_in_date');
+        $checkOutDate = $request->input('check_out_date');
+        $amenityName = $request->input('amenity_name');
 
-        // Log the values for debugging
-        Log::debug('Reservation Details:', [
-            'roomName' => $roomName,
-            'checkInDate' => $checkInDate,
-            'checkOutDate' => $checkOutDate,
-            'amenityName' => $amenityName
-        ]);
+        // Retrieve room price per night from the database
+        $room = Room::where('room_name', $roomName)->first();
+        $roomPrice = $room ? $room->price_per_night : 0; // Get the price per night for the selected room
 
-        // Retrieve room details (all available room IDs for the selected room name)
-        $rooms = Room::where('room_name', $roomName)->get();
-
-        Log::debug('Available Rooms:', $rooms->toArray());
-
-        // Check for available rooms
-        $availableRoom = null;
-        foreach ($rooms as $room) {
-            $reservationsCount = Reservation::where('room_id', $room->id)
-                ->where(function ($query) use ($checkInDate, $checkOutDate) {
-                    $query->whereBetween('check_in_date', [$checkInDate, $checkOutDate])
-                        ->orWhereBetween('check_out_date', [$checkInDate, $checkOutDate])
-                        ->orWhereRaw('? BETWEEN check_in_date AND check_out_date', [$checkInDate])
-                        ->orWhereRaw('? BETWEEN check_in_date AND check_out_date', [$checkOutDate]);
-                })->count();
-
-            // If the room is available (not fully booked), select it
-            if ($room->availability_status == 'available') {
-                $availableRoom = $room;
-                break;  // Select the first available room and exit the loop
-            }
-        }
-
-
-        Log::debug('Available Room:', $availableRoom ? $availableRoom->toArray() : ['message' => 'No available room found']);
-
-        // If no rooms are available, return error
-        if (!$availableRoom) {
-            return response()->json(['error' => 'No rooms available for the selected dates'], 400);
-        }
-
-        // Use the randomly selected available room
-        $room_id = $availableRoom->room_id;
-
-        // Check if the selected available room is fully booked
-        $reservationsCount = Reservation::where('room_id', $room_id)  // Use $room_id here
-            ->where(function ($query) use ($checkInDate, $checkOutDate) {
-                $query->whereBetween('check_in_date', [$checkInDate, $checkOutDate])
-                    ->orWhereBetween('check_out_date', [$checkInDate, $checkOutDate])
-                    ->orWhereRaw('? BETWEEN check_in_date AND check_out_date', [$checkInDate])
-                    ->orWhereRaw('? BETWEEN check_in_date AND check_out_date', [$checkOutDate]);
-            })->count();
-
-
-        if ($reservationsCount == 1) {
-            return response()->json(['error' => 'Room is fully booked for the selected dates'], 400);
-        }
-
-        // Calculate total price
-        $roomPrice = $room->price_per_night;
+        // Calculate the number of nights (assuming the dates are in 'Y-m-d' format)
         $checkIn = \Carbon\Carbon::parse($checkInDate);
         $checkOut = \Carbon\Carbon::parse($checkOutDate);
-        $nights = $checkIn->diffInDays($checkOut);
+        $nights = $checkIn->diffInDays($checkOut); // Calculate the number of days between check-in and check-out
+
+        // Calculate the total room price (room price per night * number of nights)
         $totalRoomPrice = $roomPrice * $nights;
 
-        $amenityPrice = 0;
-        $amenityId = 0;
+        // Retrieve amenity price per use from the database (if an amenity is selected)
+        $amenityPrice = 0; // Default value if no amenity is selected
         if ($amenityName) {
             $amenity = Amenities::where('amenity_name', $amenityName)->first();
-            $amenityPrice = $amenity ? $amenity->price_per_use : 0;
-            $amenityId = $amenity ? $amenity->amenity_id : 0;
+            $amenityPrice = $amenity ? $amenity->price_per_use : 0; // Get the price per use for the selected amenity
         }
 
+        // Calculate the total price (room price + amenity price)
         $totalPrice = $totalRoomPrice + $amenityPrice;
-        $idAmenity = $amenityId;
-        // Log the amenityId after it's been set
-        Log::debug('Selected Amenity ID Type:', [
-            'amenity_id_type' => gettype($idAmenity),
-        ]);
-
-
-        // Create a reservation record
-        $reservation = Reservation::create([
-            'user_id' => auth()->user()->id,
-            'room_id' => $room->room_id,
-            'amenity_id' => $idAmenity,
-            'check_in_date' => $checkInDate,
-            'check_out_date' => $checkOutDate,
-            'total_price' => $totalPrice,
-            'reservation_status' => 'reserved',
-        ]);
 
         // Create a Stripe Checkout session
         $session = Session::create([
