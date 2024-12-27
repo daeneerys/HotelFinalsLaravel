@@ -23,7 +23,7 @@
                 <div class="grid grid-cols-[1fr,1px,1fr] gap-0 px-4 h-full box-border overflow-hidden" id="calendar-container">
                     <div class="relative h-full">
                         <div id="calendar1" class="h-auto"></div>
-                        <button id="prev-month" class="absolute top-0 left-0 text-lg font-bold text-gray-700 hover:text-gray-900 m-4">
+                        <button type="button" id="prev-month" class="absolute top-0 left-0 text-lg font-bold text-gray-700 hover:text-gray-900 m-4">
                             <i class="fas fa-chevron-left"></i>
                         </button>
                     </div>
@@ -33,7 +33,7 @@
 
                     <div class="relative h-auto">
                         <div id="calendar2" class="h-auto"></div>
-                        <button id="next-month" class="absolute top-0 right-0 text-lg font-bold text-gray-700 hover:text-gray-900 m-4">
+                        <button type="button" id="next-month" class="absolute top-0 right-0 text-lg font-bold text-gray-700 hover:text-gray-900 m-4">
                             <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
@@ -66,8 +66,7 @@
                     <!-- Dropdown Trigger -->
                     <button
                         id="room-dropdown-button"
-                        class="w-full border border-gray-300 text-gray-700 py-3 px-4 text-left flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-jungle-green"
-                        >
+                        class="w-full border border-gray-300 text-gray-700 py-3 px-4 text-left flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-jungle-green">
                         <span id="room-selected-option" class="text-xs">Select a room</span>
                         <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -89,8 +88,7 @@
                     <!-- Dropdown Trigger -->
                     <button
                         id="amenity-dropdown-button"
-                        class="w-full border border-gray-300 text-gray-700 py-3 px-4 text-left flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-jungle-green"
-                        >
+                        class="w-full border border-gray-300 text-gray-700 py-3 px-4 text-left flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-jungle-green">
                         <span id="amenity-selected-option" class="text-xs">Select an amenity</span>
                         <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -119,10 +117,10 @@
                 <div id="modal-content" class="text-center">
                     <p id="modal-message" class="text-lg font-bold">Loading...</p>
                 </div>
-                <button type = "submit" id="submit-modal-btn" class="mt-4 px-4 py-2 text-sm bg-jungle-green text-white rounded-lg hover:bg-green-700">
+                <button type="submit" id="submit-modal-btn" class="mt-4 px-4 py-2 text-sm bg-jungle-green text-white rounded-lg hover:bg-green-700">
                     Reserve
                 </button>
-                <button type = "button" id="close-modal-btn" class="mt-4 px-4 py-2 text-sm bg-jungle-green text-white rounded-lg hover:bg-green-700">
+                <button type="button" id="close-modal-btn" class="mt-4 px-4 py-2 text-sm bg-jungle-green text-white rounded-lg hover:bg-green-700">
                     Close
                 </button>
             </div>

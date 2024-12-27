@@ -403,10 +403,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const checkInDate = document.getElementById('check-in-date').value;
         const checkOutDate = document.getElementById('check-out-date').value;
         
-        console.log(roomName);
-        console.log(amenityName);
-        console.log(checkInDate);
-        console.log(checkOutDate);
         // Validate that all fields are filled
         if (!roomName || !amenityName || !checkInDate || !checkOutDate) {
             alert('Please fill out all the fields');
@@ -429,11 +425,9 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(response => response.json())
         .then(data => {
+            console.log(data.url);
             if (data.url) {
                 window.location.href = data.url; // Redirect to Stripe Checkout
-            } else {
-                // If no URL is returned, show an error
-                alert('Error: Unable to create reservation or payment session.');
             }
         })
         .catch(error => {

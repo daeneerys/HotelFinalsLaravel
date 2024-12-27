@@ -34,7 +34,7 @@ class BookController extends Controller
         $amenities = Amenities::select('amenity_name', 'price_per_use')->get();
         return response()->json($amenities);
     }
-    
+
     public function reserve(Request $request)
     {
         // Initialize Stripe
@@ -46,29 +46,76 @@ class BookController extends Controller
         $checkOutDate = $request->input('check_out_date');
         $amenityName = $request->input('amenity_name');
 
-        // Retrieve room price per night from the database
-        $room = Room::where('room_name', $roomName)->first();
-        $roomPrice = $room ? $room->price_per_night : 0; // Get the price per night for the selected room
+        // Retrieve room details (all available room IDs for the selected room name)
+        $rooms = Room::where('room_name', $roomName)->get();
 
-        // Calculate the number of nights (assuming the dates are in 'Y-m-d' format)
-        $checkIn = \Carbon\Carbon::parse($checkInDate);
-        $checkOut = \Carbon\Carbon::parse($checkOutDate);
-        $nights = $checkIn->diffInDays($checkOut); // Calculate the number of days between check-in and check-out
+        Log::debug('Available Rooms:', $rooms->toArray());
 
-        // Calculate the total room price (room price per night * number of nights)
-        $totalRoomPrice = $roomPrice * $nights;
+        // Check for available rooms
+        $availableRoom = null;
+        foreach ($rooms as $room) {
+            // Count reservations for the specified room and date range
+            $reservationsCount = Reservation::where('room_id', $room->room_id)
+                ->whereBetween('check_in_date', [$checkInDate, $checkOutDate])
+                ->where(function ($query) use ($checkInDate, $checkOutDate) {
+                    $query->where(function ($subQuery) use ($checkInDate, $checkOutDate) {
+                        $subQuery->whereBetween('check_in_date', [$checkInDate, $checkOutDate])
+                            ->orWhereBetween('check_out_date', [$checkInDate, $checkOutDate]);
+                    })
+                        ->orWhereRaw('DATE(check_in_date) = DATE(?) AND DATE(check_out_date) = DATE(?)', [$checkInDate, $checkOutDate]);
+                })
+                ->exists();
 
-        // Retrieve amenity price per use from the database (if an amenity is selected)
-        $amenityPrice = 0; // Default value if no amenity is selected
-        if ($amenityName) {
-            $amenity = Amenities::where('amenity_name', $amenityName)->first();
-            $amenityPrice = $amenity ? $amenity->price_per_use : 0; // Get the price per use for the selected amenity
+            // If no reservations overlap and the room is available, select it
+            if (!$reservationsCount && $room->availability_status == 'available') {
+                $availableRoom = $room;
+                break;  // Select the first available room and exit the loop
+            }
+        }
+        // If no rooms are available, return error
+        if (!$availableRoom) {
+            return response()->json(['error' => 'No rooms available for the selected dates'], 400);
         }
 
-        // Calculate the total price (room price + amenity price)
+        // Use the randomly selected available room
+        $room_id = $availableRoom->room_id;
+
+        if ($reservationsCount > 0) {
+            return response()->json(['error' => 'Room is partially booked for the selected dates'], 400);
+        }
+
+        // Calculate total price
+        $roomPrice = $room->price_per_night;
+        $checkIn = \Carbon\Carbon::parse($checkInDate);
+        $checkOut = \Carbon\Carbon::parse($checkOutDate);
+        $nights = $checkIn->diffInDays($checkOut);
+        $totalRoomPrice = $roomPrice * $nights;
+
+        $amenityPrice = 0;
+        $amenityId = 0;
+        if ($amenityName) {
+            $amenity = Amenities::where('amenity_name', $amenityName)->first();
+            $amenityPrice = $amenity ? $amenity->price_per_use : 0;
+            $amenityId = $amenity ? $amenity->amenity_id : 0;
+        }
+
         $totalPrice = $totalRoomPrice + $amenityPrice;
+        $idAmenity = $amenityId;
+
+        // Store reservation data in session
+        session([
+            'reservation_data' => [
+                'user_id' => auth()->user()->id,
+                'room_id' => $availableRoom->room_id,
+                'amenity_id' => $idAmenity,
+                'check_in_date' => $checkInDate,
+                'check_out_date' => $checkOutDate,
+                'total_price' => $totalPrice,
+            ]
+        ]);
 
         // Create a Stripe Checkout session
+
         $session = Session::create([
             'payment_method_types' => ['card'],
             'line_items' => [[
@@ -91,6 +138,7 @@ class BookController extends Controller
         ]);
 
         // Redirect to Stripe Checkout page
+
         return response()->json(['url' => $session->url]);
     }
 
@@ -99,11 +147,68 @@ class BookController extends Controller
         // Retrieve the session ID
         $sessionId = $request->query('session_id');
 
-        return view('reservationsuccess'); // Create a success page
+        // Retrieve reservation data from session
+        $reservationData = session('reservation_data');
+
+        if (!$reservationData) {
+            return redirect()->route('home')->with('error', 'Reservation data not found.');
+        }
+
+        // Create the reservation record
+        $reservation = Reservation::create([
+            'user_id' => $reservationData['user_id'],
+            'room_id' => $reservationData['room_id'],
+            'amenity_id' => $reservationData['amenity_id'],
+            'check_in_date' => $reservationData['check_in_date'],
+            'check_out_date' => $reservationData['check_out_date'],
+            'total_price' => $reservationData['total_price'],
+            'reservation_status' => 'reserved',
+        ]);
+
+        // Load the related room data
+        $reservation->load('room');
+
+        // Clear the session data
+        session()->forget('reservation_data');
+
+        // Pass the reservation data to the view
+        return view('reservationsuccess', [
+            'reservation' => $reservation,
+        ]);
     }
 
     public function cancel()
     {
         return redirect()->route('book');
+    }
+
+    public function myReservations()
+    {
+        // Fetch reservations for the authenticated user
+        $reservations = Reservation::with('room', 'amenity') // Load related room and amenity data
+            ->where('user_id', auth()->id()) // Filter by the logged-in user's ID
+            ->orderBy('check_in_date', 'asc') // Optional: Order by check-in date
+            ->get();
+
+        // Pass reservations to the view
+        return view('myreservation', compact('reservations'));
+    }
+
+    public function cancelReservation(Request $request, $id)
+    {
+        // Fetch the reservation
+        $reservation = Reservation::where('reservation_id', $id)
+            ->where('user_id', auth()->id()) // Ensure the reservation belongs to the user
+            ->firstOrFail();
+
+        // Update the reservation status
+        $reservation->update([
+            'reservation_status' => 'cancelled',
+        ]);
+
+        // Refund logic: Notify user of 50% refund
+        // (Implement your payment gateway refund logic here if needed)
+
+        return redirect()->route('myreservation')->with('success', 'Your reservation has been cancelled. 50% of your payment will be refunded.');
     }
 }

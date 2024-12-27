@@ -59,10 +59,9 @@ Route::post('/login', [UserController::class, 'login'])->name('login.post');
 
 // Protected routes (require authentication)
 Route::middleware('auth')->group(function () {
-    Route::get('/my-reservation', function () {
-        return view('myreservation');
-    })->name('myreservation');
 
+    Route::get('/my-reservation', [BookController::class, 'myReservations'])->name('myreservation');
+    Route::delete('/my-reservation/{id}/cancel', [BookController::class, 'cancelReservation'])->name('reservation.cancel');
     // Add more authenticated routes here if needed
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 });
