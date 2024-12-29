@@ -61,7 +61,11 @@ Route::post('/login', [UserController::class, 'login'])->name('login.post');
 Route::middleware('auth')->group(function () {
 
     Route::get('/my-reservation', [BookController::class, 'myReservations'])->name('myreservation');
-    Route::delete('/my-reservation/{id}/cancel', [BookController::class, 'cancelReservation'])->name('reservation.cancel');
+    
+    Route::patch('/reservation/update/{reservation_id}', [BookController::class, 'update'])->name('reservation.update');
+
+    //Employee
+    Route::patch('/reservation/confirm/{reservation_id}', [BookController::class, 'confirmCancellation'])->name('reservation.confirm');
     // Add more authenticated routes here if needed
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 });

@@ -49,8 +49,6 @@ class BookController extends Controller
         // Retrieve room details (all available room IDs for the selected room name)
         $rooms = Room::where('room_name', $roomName)->get();
 
-        Log::debug('Available Rooms:', $rooms->toArray());
-
         // Check for available rooms
         $availableRoom = null;
         foreach ($rooms as $room) {
@@ -89,7 +87,29 @@ class BookController extends Controller
         $checkIn = \Carbon\Carbon::parse($checkInDate);
         $checkOut = \Carbon\Carbon::parse($checkOutDate);
         $nights = $checkIn->diffInDays($checkOut);
+
         $totalRoomPrice = $roomPrice * $nights;
+
+        // Apply "Stay Longer and Save" Discount
+        if ($nights >= 14) {
+            $discount = 0.50; // 50% discount
+        } elseif ($nights >= 12) {
+            $discount = 0.40; // 40% discount
+        } elseif ($nights >= 10) {
+            $discount = 0.30; // 30% discount
+        } elseif ($nights >= 7) {
+            $discount = 0.20; // 20% discount
+        } else {
+            $discount = 0.0; // No discount
+        }
+
+        $totalRoomPrice -= $totalRoomPrice * $discount;
+
+        // Apply "Book in Advance" Discount
+        $daysInAdvance = \Carbon\Carbon::now()->diffInDays($checkIn);
+        if ($daysInAdvance >= 30 && $nights >= 3) {
+            $totalRoomPrice -= $totalRoomPrice * 0.20; // Additional 20% discount
+        }
 
         $amenityPrice = 0;
         $amenityId = 0;
@@ -194,21 +214,31 @@ class BookController extends Controller
         return view('myreservation', compact('reservations'));
     }
 
-    public function cancelReservation(Request $request, $id)
+    public function update(Request $request, $reservation_id)
     {
-        // Fetch the reservation
-        $reservation = Reservation::where('reservation_id', $id)
-            ->where('user_id', auth()->id()) // Ensure the reservation belongs to the user
-            ->firstOrFail();
+        $reservation = Reservation::where('reservation_id', $reservation_id)->firstOrFail();
 
-        // Update the reservation status
-        $reservation->update([
-            'reservation_status' => 'cancelled',
-        ]);
+        if ($request->has('reservation_status') && $request->reservation_status === 'Pending') {
+            $reservation->reservation_status = 'Pending';
+            $reservation->save();
 
-        // Refund logic: Notify user of 50% refund
-        // (Implement your payment gateway refund logic here if needed)
+            return redirect()->back()->with('success', 'Cancellation request submitted and is now pending.');
+        }
 
-        return redirect()->route('myreservation')->with('success', 'Your reservation has been cancelled. 50% of your payment will be refunded.');
+        // Handle other updates if necessary
+    }
+
+    public function confirmCancellation($reservation_id)
+    {
+        $reservation = Reservation::where('reservation_id', $reservation_id)->firstOrFail();
+
+        if ($reservation->reservation_status === 'Pending') {
+            $reservation->reservation_status = 'Cancelled'; // Or 'Confirmed', depending on your workflow
+            $reservation->save();
+
+            return redirect()->back()->with('success', 'Reservation cancellation confirmed.');
+        }
+
+        return redirect()->back()->with('error', 'Invalid operation.');
     }
 }

@@ -21,9 +21,6 @@
         <p class="text-gray-600 mt-2 font-inter text-base">
             Save up to 50% OFF &amp; enjoy extra perks!
         </p>
-        <a class="text-jungle-green mt-2 inline-block hover:underline" href="#">
-            Read more →
-        </a>
         <div class="mt-4">
             <button class="bg-jungle-green text-white py-2 px-4 rounded-md hover:bg-jungle-brown transition duration-300">
                 <a href="{{route('book')}}">BOOK NOW</a>
@@ -39,9 +36,6 @@
         <p class="text-gray-600 mt-2 font-inter text-base">
             Stay longer and save up to 50% on your stay!
         </p>
-        <a class="text-jungle-green mt-2 inline-block hover:underline" href="#">
-            Read more →
-        </a>
         <div class="mt-4">
             <button class="bg-jungle-green text-white py-2 px-4 rounded-md hover:bg-jungle-brown transition duration-300">
                 <a href="{{route('book')}}">BOOK NOW</a>
@@ -57,9 +51,6 @@
         <p class="text-gray-600 mt-2 font-inter text-base ">
             Book 30 days in advance and save 20% on stays of 3+ days.
         </p>
-        <a class="text-jungle-green mt-2 inline-block hover:underline" href="#">
-            Read more →
-        </a>
         <div class="mt-4">
             <button class="bg-jungle-green text-white py-2 px-4 rounded-md hover:bg-jungle-brown transition duration-300">
                 <a href="{{route('book')}}">BOOK NOW</a>

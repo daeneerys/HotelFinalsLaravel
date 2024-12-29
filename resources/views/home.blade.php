@@ -60,7 +60,6 @@
             Here, adventure is always just a heartbeat away. Immerse yourself in the whispers of the jungle on a guided nature walk,
             rejuvenate your senses in our luxurious rainforest spa, or simply lose yourself in the serenity of our private verandas.
         </p>
-        <button class="bg-jungle-green text-white py-2 px-6 rounded-md hover:bg-jungle-brown transition duration-300">Learn More</button>
     </div>
     <div class="mt-16 flex flex-col md:flex-row items-center justify-center text-center md:text-left">
         <img alt="Verdant Sanctuary" class="w-full md:w-2/5 md:h-80 shadow-lg mb-8 md:mb-0 md:mr-8 object-cover" src="{{ asset('images/home_page_4.jpg') }}" />
@@ -106,9 +105,11 @@
             Nestled amidst the lush jungle, our resort blends modern luxury with nature’s beauty,
             offering you a peaceful escape from the ordinary.
         </p>
+        @guest
         <a href="{{ route ('login') }}" class="bg-jungle-green text-white ml-96 py-2 px-6 rounded-md hover:bg-jungle-brown transition duration-300">
             Sign in
         </a>
+        @endguest
     </div>
     <img alt="Signin" class="w-full md:w-2/5 md:h-80 shadow-lg mb-8 md:mb-0 md:ml-8 object-cover object-[50%_30%]" src="{{ asset('images/home_signin.jpg') }}" />
 </div>

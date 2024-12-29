@@ -5,7 +5,7 @@
 </p>
 <div class="grid grid-cols-2 mt-8 mx-auto">
     @foreach($uniqueRooms as $room)
-    @if($room->room_type === 'villa') <!-- Filter for guest rooms -->
+    @if($room->room_type === 'specialty suite') <!-- Filter for guest rooms -->
     <div class="border-1 border-gray-400 w-4/5 mx-auto mb-8">
         <!-- Carousel for room images -->
         <div id="carousel-{{ $room->id }}" class="relative w-full" data-carousel="static">

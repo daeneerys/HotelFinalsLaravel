@@ -47,11 +47,6 @@
                             AMENITIES
                         </a>
                     </li>
-                    <li>
-                        <a href="#" class="font-inter block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-jungle-brown md:p-0">
-                            OUR HOTEL
-                        </a>
-                    </li>
                     @guest
                     <!-- Show Login if user is not authenticated -->
                     <li>

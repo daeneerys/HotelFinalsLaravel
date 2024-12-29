@@ -41,7 +41,7 @@
 
             <!-- Reservation Status -->
             <div class="text-purple-600 font-semibold">
-                {{ ucfirst($reservation->reservation_status) }}
+                Status: {{ ucfirst($reservation->reservation_status) }}
             </div>
 
             <!-- Reservation Period -->
@@ -81,9 +81,10 @@
                                 Cancel
                             </button>
                             <!-- Submit Button -->
-                            <form action="{{ route('reservation.cancel', $reservation->reservation_id) }}" method="POST">
+                            <form action="{{ route('reservation.update', $reservation->reservation_id) }}" method="POST">
                                 @csrf
-                                @method('DELETE')
+                                @method('PATCH')
+                                <input type="hidden" name="reservation_status" value="Pending">
                                 <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg">
                                     Confirm
                                 </button>
