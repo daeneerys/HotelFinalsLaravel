@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\View\View;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class EmployeeController extends Controller
 {
@@ -24,23 +28,37 @@ class EmployeeController extends Controller
 
     // Store a new employee
     public function store(Request $request)
-    {
+    {   
+        // Custom validation messages
+        $messages = [
+            'first_name.required' => 'First name is required.',
+            'last_name.required' => 'Last name is required.',
+            'email.required' => 'Please provide a valid email address.',
+            'email.unique' => 'This email address is already registered.',
+            'phone_number.required' => 'Phone Number is required',
+            'phone_number.unique' => 'Phone Number is already registered',
+            'password.required' => 'Password is required.',
+            'password.min' => 'Password must be at least 8 characters.',
+            'password.confirmed' => 'Password and confirmation do not match.',
+        ];
         $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8|confirmed',
-            'role' => 'required|string',
+            'first_name' => 'required|string|max:50',
+            'last_name' => 'required|string|max:50',
             'phone_number' => 'required|string|max:15',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed', // Confirms password matches password_confirmation.
         ]);
 
-        $employee = new User();
-        $employee->name = $request->name;
-        $employee->email = $request->email;
-        $employee->password = Hash::make($request->password);
-        $employee->save();
+        User::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'phone_number' => $request->phone_number,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'employee', // Default role
+        ]);
 
-        return redirect()->route('admin.index')->with('success', 'Employee created successfully.');
+        return redirect()->route('admin.employees')->with('success', 'Employee created successfully.');
     }
 
     // Show the form to edit an existing employee
@@ -51,28 +69,28 @@ class EmployeeController extends Controller
 
     // Update an existing employee
     public function update(Request $request, User $employee)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $employee->id,
-        ]);
+        {
+            $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $employee->id,
+                'phone_number' => 'required|string|max:15',
+            ]);
 
-        $employee->name = $request->name;
-        $employee->email = $request->email;
-        if ($request->password) {
-            $request->validate(['password' => 'min:8|confirmed']);
-            $employee->password = Hash::make($request->password);
+            $employee->first_name = $request->first_name;
+            $employee->last_name = $request->last_name;
+            $employee->email = $request->email;
+            $employee->phone_number = $request->phone_number;
+
+            if ($request->filled('password')) {
+                $request->validate(['password' => 'min:8|confirmed']);
+                $employee->password = Hash::make($request->password);
+            }
+
+            $employee->save();
+
+            return redirect()->route('admin.employees')->with('success', 'Employee updated successfully.');
         }
-        $employee->save();
 
-        return redirect()->route('admin.index')->with('success', 'Employee updated successfully.');
-    }
-
-    // Delete an employee
-    public function destroy(User $employee)
-    {
-        $employee->delete();
-        return redirect()->route('admin.index')->with('success', 'Employee deleted successfully.');
-    }
 }
 ?>
