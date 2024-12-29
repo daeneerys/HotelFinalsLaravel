@@ -32,6 +32,7 @@
                 <li><a href="{{ route('admin.managerooms') }}" class="text-blue-600 hover:text-blue-800">Manage Rooms</a></li>
                 <li><a href="" class="text-blue-600 hover:text-blue-800">View Reservations</a></li>
                 <li><a href="{{ route('admin.cancelrequest') }}" class="text-blue-600 hover:text-blue-800">Manage Cancel Request</a></li>
+                <li><a href="{{ route('admin.viewReservations') }}" class="text-blue-600 hover:text-blue-800">View Reservations</a></li>
             </ul>
         </div>
     </div>
