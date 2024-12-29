@@ -3,7 +3,7 @@
 @section('TigerDen', 'Add Room')  <!-- Page Title -->
 
 @section('content')
-<div class="container mx-auto p-8">
+<div class="container w-4/5 mx-auto p-32">
     <!-- Form to Add a New Room -->
     <div class="bg-white p-6 rounded-lg shadow-lg">
         <h3 class="text-2xl font-semibold mb-4">Add a New Room</h3>
@@ -67,7 +67,7 @@
 
             <!-- Description (Optional) -->
             <div class="mb-4">
-                <label for="description" class="block text-lg font-medium">Description (Optional)</label>
+                <label for="description" class="block text-lg font-medium">Description</label>
                 <textarea id="description" name="description" class="w-full px-4 py-2 border border-gray-300 rounded-md">{{ old('description') }}</textarea>
             </div>
 
@@ -96,13 +96,13 @@
             <!-- Room Images (Multiple) -->
             <div class="mb-4">
                 <label for="room_images" class="block text-lg font-medium">Room Images (up to 3)</label>
-                <input type="file" id="room_images" name="room_images[]" class="w-full px-4 py-2 border border-gray-300 rounded-md" multiple>
+                <input type="file" id="room_images" name="room_images[]" class="w-full px-4 py-2 border border-gray-300 rounded-md" accept="image/*" multiple>
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">
-                Add Room
-            </button>
+            <div class="mb-4">
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Save Room</button>
+            </div>
         </form>
     </div>
 </div>

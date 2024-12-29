@@ -9,8 +9,15 @@
         <h2 class="text-3xl font-semibold text-gray-700">View Reservations</h2>
     </div>
 
+    <!-- Search Bar -->
+    <div class="mb-6 w-4/5 mx-auto">
+        <form method="GET" action="{{ route('admin.viewReservations') }}">
+            <input type="text" name="search" placeholder="Search Reservations..." class="w-full px-4 py-2 border border-gray-300 rounded-md" value="{{ request()->get('search') }}">
+        </form>
+    </div>
+
     <!-- Reservations List -->
-    <div class="mt-6 bg-white p-6 rounded-lg shadow-lg">
+    <div class="mt-6 w-4/5 mx-auto bg-white p-6 rounded-lg shadow-lg">
         <h3 class="text-xl font-semibold mb-4">All Reservations</h3>
         <table class="min-w-full table-auto">
             <thead>
@@ -36,7 +43,7 @@
                         <td class="border px-4 py-2">{{ $reservation->check_out_date }}</td>
                         <td class="border px-4 py-2">${{ number_format($reservation->total_price, 2) }}</td>
                         <td class="border px-4 py-2">
-                            <span class="px-2 py-1 text-white rounded {{ $reservation->reservation_status == 'confirmed' ? 'bg-green-600' : 'bg-red-600' }}">
+                            <span class="px-2 py-1 font-bold text-black rounded">
                                 {{ ucfirst($reservation->reservation_status) }}
                             </span>
                         </td>
@@ -46,4 +53,5 @@
         </table>
     </div>
 </div>
+
 @endsection

@@ -117,12 +117,27 @@ class UserController extends Controller
         return redirect('/');
     }
 
-    public function viewReservations()
+    public function viewReservations(Request $request)
     {
-        // Fetch all reservations with related data (eager loading)
-        $reservations = Reservation::with(['user', 'room', 'amenity'])->get();
-
-        // Pass reservations to the view
-        return view('admin.viewreservations', compact('reservations'));
+        $query = Reservation::query();
+    
+        // Check if there's a search term
+        if ($request->has('search') && $request->search) {
+            $search = $request->search;
+            
+            // Filter by reservation ID, user name, or other fields
+            $query->where('reservation_id', 'like', "%{$search}%")
+                  ->orWhereHas('user', function($q) use ($search) {
+                      $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('room', function($q) use ($search) {
+                      $q->where('room_name', 'like', "%{$search}%");
+                  });
+        }
+    
+        $reservations = $query->paginate(10); // Adjust pagination as needed
+    
+        return view('admin.viewReservations', compact('reservations'));
     }
 }

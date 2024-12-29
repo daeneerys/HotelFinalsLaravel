@@ -16,12 +16,28 @@
         </div>
     @endif
 
-    <!-- Manage Rooms Header and Button -->
+    <!-- Manage Rooms Header, Button, and Search Bar -->
     <div class="w-3/4 flex items-center justify-between mb-6">
         <h2 class="text-3xl font-semibold text-gray-700">Manage Rooms</h2>
         <a href="{{ route('admin.addroom') }}" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">
             Add New Room
         </a>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="w-3/4 mb-6">
+        <form action="{{ route('admin.managerooms') }}" method="GET" class="flex justify-between">
+            <input 
+                type="text" 
+                name="search" 
+                class="w-full px-4 py-2 border border-gray-300 rounded-md" 
+                placeholder="Search Rooms..." 
+                value="{{ request()->get('search') }}"
+            >
+            <button type="submit" class="ml-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+                Search
+            </button>
+        </form>
     </div>
 
     <!-- Rooms Table -->

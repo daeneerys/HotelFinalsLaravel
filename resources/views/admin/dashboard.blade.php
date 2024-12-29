@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('TigerDen', 'Admin Dashboard')  <!-- Page Title -->
+@section('TigerDen', 'Admin Dashboard') <!-- Page Title -->
 
 @section('content')
 <div class="container mx-auto p-8">
@@ -28,9 +28,10 @@
         <div class="bg-white p-6 rounded-lg shadow-lg">
             <h3 class="text-xl font-semibold">Admin Actions</h3>
             <ul>
-                <li><a href="{{ route('admin.employees')}}" class= "text-blue-600 hover:text-blue-800">Manage Employees</a></li>
+                @if(auth()->user()->role !== 'employee')
+                <li><a href="{{ route('admin.employees') }}" class="text-blue-600 hover:text-blue-800">Manage Employees</a></li>
+                @endif
                 <li><a href="{{ route('admin.managerooms') }}" class="text-blue-600 hover:text-blue-800">Manage Rooms</a></li>
-                <li><a href="" class="text-blue-600 hover:text-blue-800">View Reservations</a></li>
                 <li><a href="{{ route('admin.cancelrequest') }}" class="text-blue-600 hover:text-blue-800">Manage Cancel Request</a></li>
                 <li><a href="{{ route('admin.viewReservations') }}" class="text-blue-600 hover:text-blue-800">View Reservations</a></li>
             </ul>

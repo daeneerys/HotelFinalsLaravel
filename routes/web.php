@@ -70,7 +70,7 @@ Route::middleware('auth')->group(function () {
 
     //Employee
 
-        Route::patch('/reservation/confirm/{reservation_id}', [BookController::class, 'confirmCancellation'])->name('reservation.confirm');
+    Route::patch('/reservation/{reservationId}/confirmCancel', [BookController::class, 'confirmCancel'])->name('reservation.confirmCancel');
 
     //Admin
 
