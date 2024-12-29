@@ -73,30 +73,38 @@ class UserController extends Controller
     }
 
     public function login(Request $request)
-    {
-        // Validate login input
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
+{
+    // Validate login input
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|string',
+    ]);
 
-        // Attempt login
-        if (Auth::attempt($credentials)) {
-            // Regenerate session to prevent fixation attacks
-            $request->session()->regenerate();
+    // Attempt login
+    if (Auth::attempt($credentials)) {
+        // Regenerate session to prevent fixation attacks
+        $request->session()->regenerate();
 
-            // Debugging: Log the authenticated user's ID
-            Log::debug('Authenticated User ID:', ['user_id' => auth()->user()->id]);
+        // Get the authenticated user's role
+        $user = Auth::user();
 
-            // Redirect to the intended page or default dashboard
-            return redirect()->intended('my-reservation');
+        // Debugging: Log the authenticated user's role
+        Log::debug('Authenticated User Role:', ['role' => $user->role]);
+
+        // Redirect based on role
+        if ($user->role === 'admin') {
+            return redirect()->route('dashboard'); // Redirect to admin dashboard
+        } else {
+            return redirect()->intended('my-reservation'); // Redirect to default user dashboard
         }
-
-        // Return back with error message if login fails
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
     }
+
+    // Return back with error message if login fails
+    return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.',
+    ])->onlyInput('email');
+}
+
 
     public function logout(Request $request)
     {

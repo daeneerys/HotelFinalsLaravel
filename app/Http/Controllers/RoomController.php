@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Log;
 class RoomController extends Controller
 {
     // Store a newly created room
+    public function create()
+{
+    return view('admin.createroom'); // Replace with the actual Blade file for the add room form
+}
     public function store(Request $request)
     {
         // Validate the incoming request data
@@ -22,7 +26,7 @@ class RoomController extends Controller
             'capacity' => 'required|integer',
             'price_per_night' => 'required|numeric',
             'availability_status' => 'required|in:available,booked,maintenance',
-            'room_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Handle multiple images
+            'room_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10000', // Handle multiple images
         ]);
 
         // Handle image uploads and store them individually
@@ -56,7 +60,7 @@ class RoomController extends Controller
             'room_image_3' => $roomImages['room_image_3'],
         ]);
 
-        return redirect()->route('room')->with('success', 'Room created successfully!');
+        return redirect()->route('admin.managerooms')->with('status', 'Room created successfully!');
     }
 
     // Display rooms
@@ -126,4 +130,78 @@ class RoomController extends Controller
             ]);
         }
     }
+    public function managerooms()
+    {
+        // Fetch all rooms from the rooms table
+        $rooms = Room::paginate(10); // Adjust the number as needed 
+
+        // Return the view with rooms data
+        return view('admin.managerooms', compact('rooms'));
+    }
+
+    //edit room 
+
+    // Display the edit form with the existing room data
+    public function edit($room_id)
+    {
+        // Find the room by its ID
+        $room = Room::findOrFail($room_id);
+
+        return view('admin.editRoom', compact('room'));
+    }
+
+    // Update the room details
+    public function update(Request $request, $room_id)
+    {
+        // Validate the incoming request data
+        $validated = $request->validate([
+            'room_number' => 'required|unique:rooms,room_number,' . $room_id . ',room_id',
+            'room_name' => 'required|string',
+            'room_type' => 'required|in:guest,suite,villa,specialty suite,accessible',
+            'room_size' => 'required|numeric',
+            'room_details' => 'required|string',
+            'description' => 'nullable|string',
+            'capacity' => 'required|integer',
+            'price_per_night' => 'required|numeric',
+            'availability_status' => 'required|in:available,booked,maintenance',
+            'room_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Handle multiple images
+        ]);
+
+        // Find the room by ID
+        $room = Room::findOrFail($room_id);
+
+        // Handle image uploads and store them individually
+        $imagePaths = [];
+        if ($request->hasFile('room_images')) {
+            foreach ($request->file('room_images') as $index => $image) {
+                $imagePaths[$index] = $image->store('room_images', 'public'); // Save each image in the public disk
+            }
+        }
+
+        // Check if we have enough images to assign to room_image_1, room_image_2, room_image_3
+        $roomImages = [
+            'room_image_1' => $imagePaths[0] ?? $room->room_image_1,
+            'room_image_2' => $imagePaths[1] ?? $room->room_image_2,
+            'room_image_3' => $imagePaths[2] ?? $room->room_image_3,
+        ];
+
+        // Update the room data
+        $room->update([
+            'room_number' => $validated['room_number'],
+            'room_name' => $validated['room_name'],
+            'room_type' => $validated['room_type'],
+            'room_size' => $validated['room_size'],
+            'room_details' => $validated['room_details'],
+            'description' => $validated['description'],
+            'capacity' => $validated['capacity'],
+            'price_per_night' => $validated['price_per_night'],
+            'availability_status' => $validated['availability_status'],
+            'room_image_1' => $roomImages['room_image_1'],
+            'room_image_2' => $roomImages['room_image_2'],
+            'room_image_3' => $roomImages['room_image_3'],
+        ]);
+
+        return redirect()->route('admin.managerooms')->with('status', 'Room updated successfully!');
+    }
+
 }
