@@ -30,7 +30,7 @@
             <ul>
                 <li><a href="{{ route('admin.employees')}}" class= "text-blue-600 hover:text-blue-800">Manage Employees</a></li>
                 <li><a href="{{ route('admin.managerooms') }}" class="text-blue-600 hover:text-blue-800">Manage Rooms</a></li>
-                <li><a href="" class="text-blue-600 hover:text-blue-800">View Reservations</a></li>
+                <li><a href="{{ route('admin.viewReservations') }}" class="text-blue-600 hover:text-blue-800">View Reservations</a></li>
             </ul>
         </div>
     </div>

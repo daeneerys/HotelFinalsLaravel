@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Reservation;
+use App\Models\Amenities;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\View\View;
@@ -113,5 +115,14 @@ class UserController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    public function viewReservations()
+    {
+        // Fetch all reservations with related data (eager loading)
+        $reservations = Reservation::with(['user', 'room', 'amenity'])->get();
+
+        // Pass reservations to the view
+        return view('admin.viewreservations', compact('reservations'));
     }
 }

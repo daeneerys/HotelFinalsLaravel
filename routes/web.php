@@ -92,6 +92,8 @@ Route::post('/admin/employees', [EmployeeController::class, 'store'])->name('adm
 Route::get('/admin/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('admin.employees.edit');
 Route::put('/admin/employees/{employee}', [EmployeeController::class, 'update'])->name('admin.employees.update');
 Route::delete('/admin/employees/{employee}', [EmployeeController::class, 'destroy'])->name('admin.employees.destroy');
+Route::get('/admin/reservations', [UserController::class, 'viewReservations'])->name('admin.viewReservations');
+
 
 
 ?>
