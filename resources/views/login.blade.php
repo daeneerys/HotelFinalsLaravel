@@ -45,7 +45,6 @@
                         <input class="w-full h-10 bg-jungle-green text-white rounded cursor-pointer transition duration-300 hover:bg-jungle-brown" type="submit" value="Sign In" />
                     </div>
                     <div class="mt-4 flex flex-col space-y-2">
-                        <a class="text-jungle-green text-sm hover:text-jungle-brown" href="">Forget password?</a>
                         <a class="text-jungle-green text-sm hover:text-jungle-brown" href="{{ route ('register')}}">Create an account.</a>
                     </div>
                 </form>
