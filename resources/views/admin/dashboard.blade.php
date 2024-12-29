@@ -31,18 +31,9 @@
                 <li><a href="{{ route('admin.employees')}}" class= "text-blue-600 hover:text-blue-800">Manage Employees</a></li>
                 <li><a href="{{ route('admin.managerooms') }}" class="text-blue-600 hover:text-blue-800">Manage Rooms</a></li>
                 <li><a href="" class="text-blue-600 hover:text-blue-800">View Reservations</a></li>
+                <li><a href="{{ route('admin.cancelrequest') }}" class="text-blue-600 hover:text-blue-800">Manage Cancel Request</a></li>
             </ul>
         </div>
-    </div>
-
-    <!-- Recent Activity or Updates -->
-    <div class="mt-6 bg-white p-6 rounded-lg shadow-lg">
-        <h3 class="text-xl font-semibold mb-4">Recent Activity</h3>
-        <ul>
-            <li>New user registered: <strong>John Doe</strong></li>
-            <li>Reservation made for room: <strong>Ocean View Suite</strong></li>
-            <li>Admin updated the system settings.</li>
-        </ul>
     </div>
 </div>
 @endsection

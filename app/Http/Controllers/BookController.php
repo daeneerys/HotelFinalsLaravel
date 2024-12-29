@@ -228,17 +228,25 @@ class BookController extends Controller
         // Handle other updates if necessary
     }
 
-    public function confirmCancellation($reservation_id)
+    public function confirmCancellation(Request $request, $reservation_id)
     {
         $reservation = Reservation::where('reservation_id', $reservation_id)->firstOrFail();
-
+    
         if ($reservation->reservation_status === 'Pending') {
             $reservation->reservation_status = 'Cancelled'; // Or 'Confirmed', depending on your workflow
             $reservation->save();
-
+    
             return redirect()->back()->with('success', 'Reservation cancellation confirmed.');
         }
-
+    
         return redirect()->back()->with('error', 'Invalid operation.');
+    }
+
+    public function cancelRequest() {
+        // Fetch reservations where status is "Pending"
+        $reservations = Reservation::where('reservation_status', 'Pending')->get();
+    
+        // Pass the pending cancellations to the view
+        return view('admin.cancelrequest', compact('reservations'));
     }
 }

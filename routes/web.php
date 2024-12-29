@@ -76,6 +76,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/admin-dashboard', [HomeController::class, 'adminDashboard'])->name('dashboard');
 
+        Route::get('/admin/cancelrequest', [BookController::class, 'cancelRequest'])->name('admin.cancelrequest');
+
         Route::get('/admin/manage-rooms', [RoomController::class, 'managerooms'])->name('admin.managerooms');
 
         // Display the Add Room form
