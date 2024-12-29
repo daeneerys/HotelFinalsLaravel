@@ -46,7 +46,7 @@
                     </div>
                     <div class="mt-4 flex flex-col space-y-2">
                         <a class="text-jungle-green text-sm hover:text-jungle-brown" href="">Forget password?</a>
-                        <a class="text-jungle-green text-sm hover:text-jungle-brown" href="">Create an account.</a>
+                        <a class="text-jungle-green text-sm hover:text-jungle-brown" href="{{ route ('register')}}">Create an account.</a>
                     </div>
                 </form>
             </div>
