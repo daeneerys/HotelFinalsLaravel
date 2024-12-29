@@ -91,6 +91,14 @@ class EmployeeController extends Controller
 
             return redirect()->route('admin.employees')->with('success', 'Employee updated successfully.');
         }
+        public function destroy(User $employee)
+        {
+            // Delete the employee
+            $employee->delete();
+
+            // Redirect back with a success message
+            return redirect()->route('admin.employees')->with('success', 'Employee deleted successfully.');
+        }
 
 }
 ?>
