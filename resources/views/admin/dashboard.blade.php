@@ -15,7 +15,7 @@
         <!-- Total Users -->
         <div class="bg-white p-6 rounded-lg shadow-lg">
             <h3 class="text-xl font-semibold">Total Employees</h3>
-            <p class="text-3xl font-bold text-gray-700">{{ $totalCustomers }}</p>
+            <p class="text-3xl font-bold text-gray-700">{{ $totalEmployees }}</p>
         </div>
 
         <!-- Total Reservations -->

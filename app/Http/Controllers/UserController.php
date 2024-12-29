@@ -92,7 +92,7 @@ class UserController extends Controller
         Log::debug('Authenticated User Role:', ['role' => $user->role]);
 
         // Redirect based on role
-        if ($user->role === 'admin') {
+        if ($user->role === 'admin' || $user->role ==='employee') {
             return redirect()->route('dashboard'); // Redirect to admin dashboard
         } else {
             return redirect()->intended('my-reservation'); // Redirect to default user dashboard

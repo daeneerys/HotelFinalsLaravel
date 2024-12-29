@@ -23,11 +23,11 @@ class HomeController extends Controller
     public function adminDashboard()
     {
          // Fetch total number of users with role "customer" using Eloquent
-    $totalCustomers = User::where('role', 'customer')->count();
+    $totalEmployees = User::where('role', 'employee')->count();
     $totalReservations = Reservation::count();
 
     // Pass the data to the view
-    return view('admin.dashboard', compact('totalCustomers', 'totalReservations'));
+    return view('admin.dashboard', compact('totalEmployees', 'totalReservations'));
     }
 
     public function update(): void

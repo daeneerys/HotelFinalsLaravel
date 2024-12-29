@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
-class AdminSeeder extends Seeder
+class EmployeeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -21,13 +21,12 @@ class AdminSeeder extends Seeder
         //     $existingUser->delete();
         // }
         User::create([
-            'first_name' => 'Admin',
-            'last_name' => 'TigerDen',
-            'email' => 'tigerdenhotel2024@gmail.com',
-            'phone_number' => '09770254695',
-            'password' => Hash::make('adminpassword01'), // Replace with a secure password
-            'role' => 'admin',
+            'first_name' => 'Ed',
+            'last_name' => 'Caluag',
+            'email' => 'edcaluag@gmail.com',
+            'phone_number' => '09760254695',
+            'password' => Hash::make('employee01'), // Replace with a secure password
+            'role' => 'employee',
         ]);
     }
-    
 }

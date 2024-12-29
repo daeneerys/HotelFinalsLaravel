@@ -19,57 +19,96 @@
         id="navbar"
         data-route="{{ Route::currentRouteName() }}"
         class="fixed w-full z-50 top-0 start-0 
-        {{ request()->routeIs('offers') || request()->routeIs('room') ? 'bg-jungle-green text-black' : 'bg-transparent text-white' }} 
-        transition-colors duration-300">
+    {{ request()->routeIs('offers') || request()->routeIs('room') ? 'bg-jungle-green text-black' : 'bg-transparent text-white' }} 
+    transition-colors duration-300">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             <a href="{{ route('home') }}" class="text-white self-center text-4xl font-semibold whitespace-nowrap dark:text-white font-caveat">
                 TigerDen Luxury Hotel
             </a>
             <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
                 <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 bg-transparent">
+
                     <li>
-                        <a href="{{ route('offers') }}" class="font-inter block py-2 px-3 rounded md:bg-transparent md:text-white md:p-0 md:hover:text-jungle-brown md:dark:text-blue-500" aria-current="page">
+                        <a href="{{ route('offers') }}" class="font-inter block py-2 px-3 rounded md:bg-transparent md:text-white md:p-0 md:hover:text-jungle-brown md:dark:text-blue-500 
+                            @auth
+                                @if(Auth::user()->role === 'admin' || Auth::user()->role === 'employee')
+                                    hidden
+                                @endif
+                            @endauth
+                        " aria-current="page">
                             OFFERS
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('room') }}" class="font-inter block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-jungle-brown md:p-0">
+                        <a href="{{ route('room') }}" class="font-inter block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-jungle-brown md:p-0
+                                                    @auth
+                                @if(Auth::user()->role === 'admin' || Auth::user()->role === 'employee')
+                                    hidden
+                                @endif
+                            @endauth
+                        ">
                             ROOM
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route ('dine') }}" class="font-inter block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-jungle-brown md:p-0">
+                        <a href="{{ route('dine') }}" class="font-inter block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-jungle-brown md:p-0
+                                                    @auth
+                                @if(Auth::user()->role === 'admin' || Auth::user()->role === 'employee')
+                                    hidden
+                                @endif
+                            @endauth
+                        ">
                             DINING
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route ('amenities') }}" class="font-inter block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-jungle-brown md:p-0">
+                        <a href="{{ route('amenities') }}" class="font-inter block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-jungle-brown md:p-0 
+                                                    @auth
+                                @if(Auth::user()->role === 'admin' || Auth::user()->role === 'employee')
+                                    hidden
+                                @endif
+                            @endauth
+                        ">
                             AMENITIES
                         </a>
                     </li>
+
                     @guest
                     <!-- Show Login if user is not authenticated -->
                     <li>
-                        <a href="{{ route ('login')}}" class="font-inter block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-jungle-brown md:p-0">
+                        <a href="{{ route('login') }}" class="font-inter block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-jungle-brown md:p-0">
                             LOGIN
                         </a>
                     </li>
                     @endguest
                     @auth
+                    <!-- Show Dashboard if user is authenticated and is admin or employee -->
+                    @if(Auth::user()->role === 'admin' || Auth::user()->role === 'employee')
+                    <li>
+                        <a href="{{ route('dashboard') }}" class="font-inter block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-jungle-brown md:p-0">
+                            DASHBOARD
+                        </a>
+                    </li>
+                    @endif
+
                     <!-- Show More Dropdown if user is logged In -->
                     <li>
-                        <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="flex items-center justify-between font-inter py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-jungle-brown md:p-0">MORE <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                <path stroke="currentColor" 
-                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                        <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="flex items-center justify-between font-inter py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-jungle-brown md:p-0                             @auth
+                                @if(Auth::user()->role === 'admin' || Auth::user()->role === 'employee')
+                                    hidden
+                                @endif
+                            @endauth">MORE <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                             </svg>
                         </button>
                         <div id="dropdownNavbar" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownLargeButton">
                                 <li>
-                                    <a href="{{route ('myreservation')}}" class="block px-4 py-2 font-inter hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">My Reservations</a>
+                                    <a href="{{route('myreservation')}}" class="block px-4 py-2 font-inter hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">My Reservations</a>
                                 </li>
                                 <li>
-                                    <a href="{{route ('book')}}" class="block px-4 py-2 font-inter hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Reserve Now</a>
+                                    <a href="{{route('book')}}" class="block px-4 py-2 font-inter hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Reserve Now</a>
                                 </li>
                             </ul>
                         </div>
@@ -84,10 +123,12 @@
                         </form>
                     </li>
                     @endauth
+                </ul>
             </div>
+        </div>
     </nav>
     @yield('content')
-    @if(!request()->is('reservation/success'))
+    @if(Auth::check() && Auth::user()->role == 'customer' && !request()->is('reservation/success'))
     <footer class="bg-jungle-dark-brown py-8 font-inter">
         <div class="container mx-auto px-10">
             <div class="flex flex-col md:flex-row justify-between items-center md:space-x-8 border-b border-white pb-4">

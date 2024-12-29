@@ -58,7 +58,7 @@
     </div>
 
     <!-- Pagination Links -->
-    <div class="mt-4 w-3/4">
+    <div class="mt-12 mb-12 w-3/4">
         <div class="flex justify-center">
             {{ $rooms->links('pagination::tailwind') }}
         </div>
