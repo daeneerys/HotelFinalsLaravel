@@ -17,16 +17,20 @@
     <table class="table-auto w-full border-collapse">
         <thead>
             <tr>
-                <th class="border p-2">Name</th>
+                <th class="border p-2">First Name</th>
+                <th class="border p-2">Last Name</th>
                 <th class="border p-2">Email</th>
+                <th class="border p-2">Phone Number</th>
                 <th class="border p-2">Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach($employees as $employee)
                 <tr>
-                    <td class="border p-2">{{ $employee->name }}</td>
+                    <td class="border p-2">{{ $employee->first_name }}</td>
+                    <td class="border p-2">{{ $employee->last_name }}</td>
                     <td class="border p-2">{{ $employee->email }}</td>
+                    <td class="border p-2">{{ $employee->phone_number }}</td>
                     <td class="border p-2">
                         <a href="{{ route('admin.employees.edit', $employee->id) }}" class="text-blue-600">Edit</a> |
                         <form action="{{ route('admin.employees.destroy', $employee->id) }}" method="POST" style="display:inline;">
